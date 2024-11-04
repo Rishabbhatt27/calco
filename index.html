@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Multi-Unit Saman Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://cdn.pixabay.com/photo/2016/11/29/06/20/shopping-1866412_1280.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #fff;
+        }
+
+        .calculator-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #ffcc00;
+        }
+
+        input, select {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+
+        button {
+            width: 90%;
+            padding: 12px;
+            background-color: #ff9900;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #cc7a00;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #ffcc00;
+        }
+
+        #piecesInput {
+            display: none; /* Initially hidden */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator-container">
+        <h2>Multi-Unit Saman Calculator</h2>
+
+        <!-- User inputs for price per unit and available money -->
+        <label for="pricePerUnit">Saman ka Price (per unit):</label>
+        <input type="number" id="pricePerUnit" placeholder="Enter price per unit"><br>
+
+        <label for="moneyAvailable">Kitne Paise Hain:</label>
+        <input type="number" id="moneyAvailable" placeholder="Enter your money"><br>
+
+        <!-- Select option for units -->
+        <label for="unitType">Unit Type:</label>
+        <select id="unitType" onchange="togglePiecesInput()">
+            <option value="kg">Kilogram (kg)</option>
+            <option value="g">Gram (g)</option>
+            <option value="mg">Milligram (mg)</option>
+            <option value="dozen">Dozen (pieces)</option>
+            <option value="liter">Liter</option>
+        </select><br>
+
+        <!-- Additional input for custom pieces if dozen is selected -->
+        <div id="piecesInput">
+            <label for="pieces">Kitne Pieces:</label>
+            <input type="number" id="pieces" placeholder="Enter number of pieces"><br>
+        </div>
+
+        <!-- Button to trigger the calculation -->
+        <button onclick="calculateAmount()">Calculate</button>
+
+        <!-- Result will be displayed here -->
+        <p id="result"></p>
+    </div>
+
+    <script>
+        function togglePiecesInput() {
+            var unitType = document.getElementById("unitType").value;
+            var piecesInputDiv = document.getElementById("piecesInput");
+
+            // Show the pieces input only if "dozen" is selected
+            if (unitType === "dozen") {
+                piecesInputDiv.style.display = "block";
+            } else {
+                piecesInputDiv.style.display = "none";
+            }
+        }
+
+        function calculateAmount() {
+            // Get user inputs
+            var pricePerUnit = document.getElementById("pricePerUnit").value;
+            var moneyAvailable = document.getElementById("moneyAvailable").value;
+            var unitType = document.getElementById("unitType").value;
+            var pieces = document.getElementById("pieces").value; // Get custom pieces input
+
+            // Check if inputs are valid
+            if (pricePerUnit > 0 && moneyAvailable > 0) {
+                var amount = moneyAvailable / pricePerUnit;
+
+                // Conversion for different units
+                if (unitType === "g") {
+                    amount = amount * 1000; // Convert kg to grams
+                } else if (unitType === "mg") {
+                    amount = amount * 1000000; // Convert kg to milligrams
+                } else if (unitType === "dozen") {
+                    if (pieces > 0) {
+                        pricePerUnit = pricePerUnit / 12; // Convert price per dozen to per piece
+                        amount = moneyAvailable / pricePerUnit;
+                    }
+                }
+
+                // Show result based on unit type
+                var unitDisplay = unitType === "kg" ? " kg" :
+                                  unitType === "g" ? " grams" :
+                                  unitType === "mg" ? " milligrams" :
+                                  unitType === "dozen" ? " pieces" :
+                                  " liters";
+
+                document.getElementById("result").innerHTML = "Tere " + moneyAvailable + " Rs mein " + amount.toFixed(2) + unitDisplay + " saman aayega.";
+            } else {
+                document.getElementById("result").innerHTML = "Please valid numbers dal!";
+            }
+} 
+    </script>
+  
+</body>
+</html>
